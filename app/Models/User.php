@@ -52,6 +52,11 @@ class User extends Authenticatable
         return $this->hasMany(Showcase::class);
     }
 
+    public function requestServices(): HasMany
+    {
+        return $this->hasMany(RequestService::class);
+    }
+
     // ─── Role Helpers ─────────────────────────────────────────────────────────
 
     public function isAdmin(): bool

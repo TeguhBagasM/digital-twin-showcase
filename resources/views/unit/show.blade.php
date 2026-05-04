@@ -147,7 +147,7 @@
                         rows="5"
                         placeholder="Jelaskan masalah atau kebutuhan service..."
                         class="w-full rounded-xl bg-slate-950 border border-white/10 text-white text-sm font-body px-4 py-3 resize-none focus:outline-none focus:border-brand-500/50 transition-colors placeholder-slate-600"
-                    ></textarea>
+                    >{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                     @enderror

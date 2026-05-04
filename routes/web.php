@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ShowcaseController;
+use App\Http\Controllers\RequestServiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,23 +25,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ShowcaseController::class, 'index'])
         ->name('dashboard');
 
+    // Showcase CRUD management
+    Route::get('/showcases', [ShowcaseController::class, 'index'])
+        ->name('showcases.index');
+    Route::get('/showcases/create', [ShowcaseController::class, 'create'])
+        ->name('showcases.create');
+    Route::post('/showcases', [ShowcaseController::class, 'store'])
+        ->name('showcases.store');
+    Route::get('/showcases/{showcase}/edit', [ShowcaseController::class, 'edit'])
+        ->name('showcases.edit');
+    Route::put('/showcases/{showcase}', [ShowcaseController::class, 'update'])
+        ->name('showcases.update');
+    Route::delete('/showcases/{showcase}', [ShowcaseController::class, 'destroy'])
+        ->name('showcases.destroy');
+
     // Unit Passport (SEO-friendly URL)
     Route::get('/unit/{serial_number}', [ShowcaseController::class, 'show'])
         ->name('unit.show');
 
     // Request Service form submission
-    Route::post('/unit/request-service', function (\Illuminate\Http\Request $request) {
-        $request->validate([
-            'serial_number' => 'required|string|exists:showcases,serial_number',
-            'description'   => 'nullable|string|max:500',
-        ]);
-
-        // TODO: Store to service_requests table or send notification
-        // For now, redirect back with success message
-        return redirect()
-            ->route('unit.show', $request->serial_number)
-            ->with('success', 'Permintaan service untuk unit ' . $request->serial_number . ' telah dikirim.');
-    })->name('unit.request-service');
+    Route::post('/unit/request-service', [RequestServiceController::class, 'store'])
+        ->name('unit.request-service');
 
 });
 

@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Showcase;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class ShowcaseController extends Controller
 {
@@ -13,14 +16,20 @@ class ShowcaseController extends Controller
      * Dashboard: show showcases based on user role.
      * Admin sees all; clients see only their own.
      */
-    public function index()
+    public function index(Request $request): View
     {
         /** @var User $user */
         $user = Auth::user();
 
         $showcases = $user->isAdmin()
             ? Showcase::with('user')->latest()->get()
-            : Showcase::where('user_id', $user->id)->latest()->get();
+            : Showcase::with('user')->where('user_id', $user->id)->latest()->get();
+
+        if ($request->routeIs('showcases.index')) {
+            $this->authorize('viewAny', Showcase::class);
+
+            return view('showcases.index', compact('showcases', 'user'));
+        }
 
         return view('dashboard.index', compact('showcases', 'user'));
     }
@@ -34,8 +43,96 @@ class ShowcaseController extends Controller
         $showcase = Showcase::where('serial_number', $serialNumber)->firstOrFail();
 
         // Enforce policy: user can only view their own showcase (admin bypasses)
-        Gate::authorize('view', $showcase);
+        $this->authorize('view', $showcase);
 
         return view('unit.show', compact('showcase'));
+    }
+
+    public function create(): View
+    {
+        $this->authorize('create', Showcase::class);
+
+        return view('showcases.create', [
+            'showcase' => new Showcase(),
+            'users' => User::orderBy('name')->get(),
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $this->authorize('create', Showcase::class);
+
+        $validated = $request->validate([
+            'warranty_expired_at' => ['required', 'date'],
+            'compressor_type' => ['required', 'string', 'max:255'],
+            'glass_spec' => ['required', 'string', 'max:255'],
+            'user_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        $user = $request->user();
+
+        $showcase = DB::transaction(function () use ($validated, $user) {
+            return Showcase::create([
+                'serial_number' => Showcase::generateSerialNumber(),
+                'user_id' => $user->isAdmin() && !empty($validated['user_id'])
+                    ? $validated['user_id']
+                    : $user->id,
+                'warranty_expired_at' => $validated['warranty_expired_at'],
+                'compressor_type' => $validated['compressor_type'],
+                'glass_spec' => $validated['glass_spec'],
+            ]);
+        });
+
+        return redirect()
+            ->route('showcases.index')
+            ->with('success', 'Showcase ' . $showcase->serial_number . ' berhasil ditambahkan.');
+    }
+
+    public function edit(Showcase $showcase): View
+    {
+        $this->authorize('update', $showcase);
+
+        return view('showcases.edit', [
+            'showcase' => $showcase->load('user'),
+            'users' => User::orderBy('name')->get(),
+        ]);
+    }
+
+    public function update(Request $request, Showcase $showcase): RedirectResponse
+    {
+        $this->authorize('update', $showcase);
+
+        $validated = $request->validate([
+            'warranty_expired_at' => ['required', 'date'],
+            'compressor_type' => ['required', 'string', 'max:255'],
+            'glass_spec' => ['required', 'string', 'max:255'],
+            'user_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        $user = $request->user();
+        $showcase->update([
+            'user_id' => $user->isAdmin() && !empty($validated['user_id'])
+                ? $validated['user_id']
+                : $showcase->user_id,
+            'warranty_expired_at' => $validated['warranty_expired_at'],
+            'compressor_type' => $validated['compressor_type'],
+            'glass_spec' => $validated['glass_spec'],
+        ]);
+
+        return redirect()
+            ->route('showcases.index')
+            ->with('success', 'Showcase ' . $showcase->serial_number . ' berhasil diperbarui.');
+    }
+
+    public function destroy(Showcase $showcase): RedirectResponse
+    {
+        $this->authorize('delete', $showcase);
+
+        $serialNumber = $showcase->serial_number;
+        $showcase->delete();
+
+        return redirect()
+            ->route('showcases.index')
+            ->with('success', 'Showcase ' . $serialNumber . ' berhasil dihapus.');
     }
 }
