@@ -18,7 +18,7 @@ class ShowcasePolicy
      */
     public function view(User $user, Showcase $showcase): bool
     {
-        return $user->id === $showcase->user_id;
+        return (int) $user->id === (int) $showcase->user_id;
     }
 
     /**

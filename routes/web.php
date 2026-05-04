@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Unit Passport (SEO-friendly URL)
     Route::get('/unit/{serial_number}', [ShowcaseController::class, 'show'])
+        ->where('serial_number', '[A-Za-z0-9\-]+')
         ->name('unit.show');
 
     // Request Service form submission

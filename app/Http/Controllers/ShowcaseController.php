@@ -40,7 +40,10 @@ class ShowcaseController extends Controller
      */
     public function show(string $serialNumber)
     {
-        $showcase = Showcase::where('serial_number', $serialNumber)->firstOrFail();
+        $serialNumber = strtoupper($serialNumber);
+
+        $showcase = Showcase::whereRaw('LOWER(serial_number) = ?', [strtolower($serialNumber)])
+            ->firstOrFail();
 
         // Enforce policy: user can only view their own showcase (admin bypasses)
         $this->authorize('view', $showcase);
