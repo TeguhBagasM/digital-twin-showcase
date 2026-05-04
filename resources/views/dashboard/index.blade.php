@@ -36,6 +36,11 @@
                     <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Role</p>
                     <p class="text-lg font-display font-700 text-white capitalize">{{ $user->role }}</p>
                 </div>
+                @if($user->isAdmin())
+                <a href="{{ route('showcases.index') }}" class="col-span-2 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white px-4 py-3 text-sm font-display font-700 transition-colors text-center">
+                    Kelola Showcase
+                </a>
+                @endif
             </div>
         </div>
     </div>
