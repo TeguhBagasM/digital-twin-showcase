@@ -66,20 +66,27 @@ class ShowcaseController extends Controller
             'warranty_expired_at' => ['required', 'date'],
             'compressor_type' => ['required', 'string', 'max:255'],
             'glass_spec' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'image', 'mimes:webp', 'max:2048'],
             'user_id' => ['nullable', 'exists:users,id'],
         ]);
 
         $user = $request->user();
 
         $showcase = DB::transaction(function () use ($validated, $user) {
+            $serialNumber = Showcase::generateSerialNumber();
+            $imageFile = request()->file('image');
+            $imagePath = 'showcases/' . $serialNumber . '.webp';
+            $imageFile->move(public_path('images/showcases'), $serialNumber . '.webp');
+
             return Showcase::create([
-                'serial_number' => Showcase::generateSerialNumber(),
+                'serial_number' => $serialNumber,
                 'user_id' => $user->isAdmin() && !empty($validated['user_id'])
                     ? $validated['user_id']
                     : $user->id,
                 'warranty_expired_at' => $validated['warranty_expired_at'],
                 'compressor_type' => $validated['compressor_type'],
                 'glass_spec' => $validated['glass_spec'],
+                'image' => $imagePath,
             ]);
         });
 
@@ -106,10 +113,26 @@ class ShowcaseController extends Controller
             'warranty_expired_at' => ['required', 'date'],
             'compressor_type' => ['required', 'string', 'max:255'],
             'glass_spec' => ['required', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'mimes:webp', 'max:2048'],
             'user_id' => ['nullable', 'exists:users,id'],
         ]);
 
         $user = $request->user();
+        $imagePath = $showcase->image;
+
+        if ($request->hasFile('image')) {
+            if ($showcase->image && str_starts_with($showcase->image, 'showcases/')) {
+                $existingImage = public_path('images/' . $showcase->image);
+
+                if (file_exists($existingImage)) {
+                    unlink($existingImage);
+                }
+            }
+
+            $request->file('image')->move(public_path('images/showcases'), $showcase->serial_number . '.webp');
+            $imagePath = 'showcases/' . $showcase->serial_number . '.webp';
+        }
+
         $showcase->update([
             'user_id' => $user->isAdmin() && !empty($validated['user_id'])
                 ? $validated['user_id']
@@ -117,6 +140,7 @@ class ShowcaseController extends Controller
             'warranty_expired_at' => $validated['warranty_expired_at'],
             'compressor_type' => $validated['compressor_type'],
             'glass_spec' => $validated['glass_spec'],
+            'image' => $imagePath,
         ]);
 
         return redirect()

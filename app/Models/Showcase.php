@@ -19,6 +19,7 @@ class Showcase extends Model
         'warranty_expired_at',
         'compressor_type',
         'glass_spec',
+        'image',
     ];
 
     protected function casts(): array
@@ -31,6 +32,20 @@ class Showcase extends Model
     public function getRouteKeyName(): string
     {
         return 'serial_number';
+    }
+
+    public function imageUrl(): ?string
+    {
+        if (blank($this->image)) {
+            return null;
+        }
+
+        return asset('images/' . $this->image);
+    }
+
+    public function image_url(): ?string
+    {
+        return $this->imageUrl();
     }
 
     public static function generateSerialNumber(): string

@@ -4,9 +4,12 @@
     $formMethod = $formMethod ?? 'POST';
     $submitLabel = $submitLabel ?? 'Simpan';
     $currentUser = auth()->user();
+    $selectedImageUrl = old('image')
+        ? null
+        : ($showcase->image_url() ?? null);
 @endphp
 
-<form method="POST" action="{{ $formAction }}" class="space-y-5">
+<form method="POST" action="{{ $formAction }}" enctype="multipart/form-data" class="space-y-5">
     @csrf
     @if($formMethod !== 'POST')
         @method($formMethod)
@@ -56,6 +59,51 @@
         </div>
     </div>
 
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-2xl border border-white/10 bg-slate-950 p-4 sm:p-5">
+            <div class="flex items-center justify-between gap-3 mb-4">
+                <div>
+                    <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Preview Gambar</p>
+                    <p class="text-sm text-slate-300">{{ $isEdit ? 'Gambar aktif saat ini' : 'Pilih gambar untuk showcase' }}</p>
+                </div>
+            </div>
+
+            @if($selectedImageUrl)
+                <img
+                    src="{{ $selectedImageUrl }}"
+                    alt="Showcase image preview"
+                    loading="lazy"
+                    data-showcase-image-preview
+                    class="w-full rounded-2xl border border-white/10 object-cover aspect-[16/10]"
+                >
+            @else
+                <div class="flex h-48 items-center justify-center rounded-2xl border border-dashed border-white/10 text-sm text-slate-500">
+                    No image available
+                </div>
+            @endif
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-slate-950 p-4 sm:p-5 space-y-4">
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5">Upload Gambar Showcase</label>
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/webp"
+                    data-showcase-image-input
+                    class="w-full rounded-xl bg-slate-950 border border-white/10 px-4 py-3 text-sm text-white file:mr-4 file:rounded-lg file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-sm file:font-display file:font-700 file:text-white hover:file:bg-brand-500 focus:border-brand-500/60 focus:outline-none"
+                >
+                @error('image')
+                    <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="rounded-xl bg-slate-900/80 border border-white/5 p-4 text-sm text-slate-400 leading-relaxed">
+                Upload gambar <span class="text-slate-200">.webp</span> ringan untuk setiap showcase. Disarankan di bawah 200KB.
+            </div>
+        </div>
+    </div>
+
     @if($isEdit)
         <div class="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3">
             <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Serial Number</p>
@@ -91,3 +139,35 @@
         </button>
     </div>
 </form>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.querySelector('[data-showcase-image-input]');
+    const preview = document.querySelector('[data-showcase-image-preview]');
+
+    if (!input || !preview) {
+        return;
+    }
+
+    const updatePreview = (file) => {
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            preview.src = event.target.result;
+            preview.alt = file.name;
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    input.addEventListener('change', function () {
+        updatePreview(this.files && this.files[0] ? this.files[0] : null);
+    });
+});
+</script>
+@endpush

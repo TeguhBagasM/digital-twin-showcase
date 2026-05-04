@@ -22,6 +22,22 @@
         <h1 class="text-2xl sm:text-4xl font-display font-800 text-white leading-tight break-words">{{ $showcase->serial_number }}</h1>
     </div>
 
+    {{-- Showcase Image --}}
+    <div class="mb-4 sm:mb-5 fade-in-2 max-w-md mx-auto">
+        @if($showcase->image)
+            <img
+                src="{{ $showcase->image_url() }}"
+                alt="Showcase {{ $showcase->serial_number }}"
+                loading="lazy"
+                class="w-full max-w-md h-auto object-contain rounded-lg border border-white/10 shadow-md shadow-black/10"
+            >
+        @else
+            <div class="rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-8 text-center text-sm text-slate-500">
+                No image available
+            </div>
+        @endif
+    </div>
+
     {{-- Main Info Card --}}
     <div class="rounded-3xl bg-slate-900/70 border border-white/10 overflow-hidden fade-in-2 mb-4 sm:mb-5 shadow-lg shadow-black/10">
 

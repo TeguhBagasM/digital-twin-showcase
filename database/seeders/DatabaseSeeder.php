@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             'warranty_expired_at'=> now()->addYears(2)->toDateString(), // Aktif
             'compressor_type'    => 'Embraco Inverter',
             'glass_spec'         => 'Double Glass Anti-Fog',
+            'image'              => 'showcase1.webp',
         ]);
 
         Showcase::create([
@@ -50,6 +51,7 @@ class DatabaseSeeder extends Seeder
             'warranty_expired_at'=> now()->subMonths(3)->toDateString(), // Kedaluwarsa
             'compressor_type'    => 'Danfoss Scroll',
             'glass_spec'         => 'Triple Glass Low-E Coating',
+            'image'              => 'showcase2.webp',
         ]);
 
         // ─── Showcases for Chocolate ──────────────────────────────────────────
@@ -60,6 +62,7 @@ class DatabaseSeeder extends Seeder
             'warranty_expired_at'=> now()->addYear()->toDateString(), // Aktif
             'compressor_type'    => 'Tecumseh Rotary',
             'glass_spec'         => 'Single Glass Tempered',
+            'image'              => 'showcase3.webp',
         ]);
     }
 }
