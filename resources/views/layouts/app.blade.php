@@ -45,9 +45,10 @@
         body { font-family: 'DM Sans', sans-serif; }
         h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
         .nav-glass {
-            background: rgba(11, 17, 32, 0.96);
+            background: rgba(11, 17, 32, 0.94);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
         }
         .card-hover {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -78,50 +79,52 @@
 <body class="bg-slate-950 min-h-full text-slate-100">
 
     {{-- Navigation --}}
-    <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:py-0">
+    <div class="relative z-50 px-3 sm:fixed sm:top-3 sm:left-0 sm:right-0 sm:px-6 lg:px-8">
+        <nav class="nav-glass mx-auto max-w-6xl rounded-2xl">
+            <div class="px-4 sm:px-6 lg:px-8 py-3">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-                {{-- Logo --}}
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group self-start">
-                    <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center group-hover:bg-brand-500 transition-colors">
-                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
-                        </svg>
-                    </div>
-                    <span class="font-display font-700 text-white tracking-tight">
-                        Digital<span class="text-brand-500">Twin</span>
-                    </span>
-                </a>
-
-                {{-- User menu --}}
-                @auth
-                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 sm:self-auto self-stretch">
-                    <div class="flex items-center justify-between gap-2 sm:justify-start">
-                        <span class="text-xs text-slate-400 font-body">{{ Auth::user()->name }}</span>
-                        <span class="text-xs px-2 py-0.5 rounded-full font-display font-600 uppercase tracking-wider
-                            {{ Auth::user()->role === 'admin' ? 'bg-violet-900/60 text-violet-300 border border-violet-700/50' : '' }}
-                            {{ Auth::user()->role === 'coffee' ? 'bg-amber-900/60 text-amber-300 border border-amber-700/50' : '' }}
-                            {{ Auth::user()->role === 'chocolate' ? 'bg-orange-900/60 text-orange-300 border border-orange-700/50' : '' }}
-                        ">
-                            {{ Auth::user()->role }}
+                    {{-- Logo --}}
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group self-start">
+                        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center group-hover:bg-brand-500 transition-colors shadow-sm shadow-black/20">
+                            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                            </svg>
+                        </div>
+                        <span class="font-display font-700 text-white tracking-tight text-base sm:text-lg">
+                            Digital<span class="text-brand-500">Twin</span>
                         </span>
-                    </div>
+                    </a>
 
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="w-full sm:w-auto text-xs text-slate-300 hover:text-white transition-colors px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 font-body border border-white/10">
-                            Logout
-                        </button>
-                    </form>
+                    {{-- User menu --}}
+                    @auth
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 sm:self-auto self-stretch">
+                        <div class="flex items-center justify-between gap-2 sm:justify-start">
+                            <span class="text-xs text-slate-400 font-body">{{ Auth::user()->name }}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full font-display font-600 uppercase tracking-wider whitespace-nowrap
+                                {{ Auth::user()->role === 'admin' ? 'bg-violet-900/60 text-violet-300 border border-violet-700/50' : '' }}
+                                {{ Auth::user()->role === 'coffee' ? 'bg-amber-900/60 text-amber-300 border border-amber-700/50' : '' }}
+                                {{ Auth::user()->role === 'chocolate' ? 'bg-orange-900/60 text-orange-300 border border-orange-700/50' : '' }}
+                            ">
+                                {{ Auth::user()->role }}
+                            </span>
+                        </div>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full sm:w-auto text-xs text-slate-300 hover:text-white transition-colors px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 font-body border border-white/10">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                    @endauth
                 </div>
-                @endauth
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 
     {{-- Main Content --}}
-    <main class="pt-20 sm:pt-16 min-h-screen">
+    <main class="pt-4 sm:pt-28 min-h-screen">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
             {{-- Flash Messages --}}

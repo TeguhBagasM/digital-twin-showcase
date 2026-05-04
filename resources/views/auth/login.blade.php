@@ -111,9 +111,9 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="w-full py-3 rounded-xl font-display font-700 text-sm text-white
-                           bg-brand-600 hover:bg-brand-500 active:scale-95
-                           transition-all duration-200">
+                      class="w-full py-3 rounded-xl font-display font-700 text-sm text-white
+                          bg-emerald-500 hover:bg-emerald-400 active:scale-95
+                          transition-all duration-200 shadow-md shadow-emerald-900/25 border border-emerald-300/30">
                     Masuk
                 </button>
             </form>
