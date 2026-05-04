@@ -1,66 +1,98 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Digital Twin Showcase Portal - Holicindo
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Live Demo:
+https://holicindo-demo.site
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 Deskripsi Project
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Digital Twin Showcase Portal adalah sistem berbasis web yang dirancang untuk mengelola unit showcase industri secara terstruktur. Sistem ini memungkinkan setiap klien memiliki akses terbatas terhadap unit miliknya, serta menyediakan fitur monitoring dan request service berbasis serial number.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🎯 Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🔐 Isolasi Data (Multi-Client)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- Setiap user hanya dapat melihat data miliknya
+- Akses unit divalidasi menggunakan authorization (Policy)
+- Proteksi terhadap akses manual URL (403 Forbidden)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+### 🧾 Manajemen Showcase
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Serial number otomatis (HC-YYYY-XXX)
+- Informasi spesifikasi teknis
+- Status garansi dinamis
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 📱 Unit Passport (Mobile Friendly)
 
-## Contributing
+- Halaman detail unit berbasis mobile-first
+- URL SEO-friendly:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```
+    /unit/HC-2026-001
+    ```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🛠 Request Service
 
-## Security Vulnerabilities
+- Pengguna dapat mengirim permintaan service
+- Otomatis terhubung dengan serial number unit
+- Data tersimpan di database
+- Admin dapat memonitor request
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧱 Teknologi yang Digunakan
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Laravel 12
+- Laravel Breeze
+- Blade + Tailwind CSS
+- MySQL
+
+---
+
+## 🔑 Kredensial Login
+
+### Admin
+
+- Email: [admin@mail.com](mailto:admin@mail.com)
+- Password: password
+
+### Client Coffee
+
+- Email: [coffee@mail.com](mailto:coffee@mail.com)
+- Password: password
+
+### Client Chocolate
+
+- Email: [choco@mail.com](mailto:choco@mail.com)
+- Password: password
+
+---
+
+## 🔐 Penjelasan Isolasi Data
+
+Sistem ini menerapkan isolasi data menggunakan Laravel Policy untuk memastikan setiap user hanya dapat mengakses data showcase miliknya berdasarkan relasi user_id. Setiap akses terhadap detail unit akan divalidasi melalui authorization sehingga apabila user mencoba mengakses unit milik klien lain melalui URL secara langsung, sistem akan menolak akses dengan response 403 Forbidden. Pendekatan ini menjamin keamanan dan pemisahan data antar klien dalam lingkungan multi-tenant.
+
+---
+
+## 📊 Catatan
+
+Project ini dikembangkan sebagai bagian dari tes teknis untuk membangun portal B2B dengan fokus pada:
+
+- keamanan data
+- performa
+- dan visibilitas SEO
+
+---
+
+## 👨‍💻 Developer
+
+Teguh Bagas Mardiansyah
