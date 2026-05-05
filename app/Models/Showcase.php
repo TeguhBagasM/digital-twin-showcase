@@ -37,10 +37,10 @@ class Showcase extends Model
     public function imageUrl(): ?string
     {
         if (blank($this->image)) {
-            return null;
+            return asset('images/default.jpg');
         }
 
-        return asset('images/' . $this->image);
+        return asset('storage/' . ltrim($this->image, '/'));
     }
 
     public function image_url(): ?string
@@ -55,6 +55,7 @@ class Showcase extends Model
 
         $lastSerialNumber = static::query()
             ->where('serial_number', 'like', $prefix . '%')
+            ->lockForUpdate()
             ->orderByDesc('serial_number')
             ->value('serial_number');
 
