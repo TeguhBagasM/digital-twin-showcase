@@ -69,15 +69,31 @@ class ShowcaseController extends Controller
             'warranty_expired_at' => ['required', 'date'],
             'compressor_type' => ['required', 'string', 'max:255'],
             'glass_spec' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'image', 'mimes:webp', 'max:2048'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'user_id' => ['nullable', 'exists:users,id'],
         ]);
 
         $user = $request->user();
 
-        $showcase = DB::transaction(function () use ($validated, $user) {
+        $showcase = DB::transaction(function () use ($validated, $user, $request) {
+            DB::table('showcases')
+                ->select('id')
+                ->orderByDesc('id')
+                ->lockForUpdate()
+                ->first();
+
+            $duplicate = Showcase::where('user_id', $user->id)
+                ->where('compressor_type', $validated['compressor_type'])
+                ->where('glass_spec', $validated['glass_spec'])
+                ->latest()
+                ->first();
+
+            if ($duplicate && $duplicate->created_at->diffInSeconds(now()) < 3) {
+                return null;
+            }
+
             $serialNumber = Showcase::generateSerialNumber();
-            $imageFile = request()->file('image');
+            $imageFile = $request->file('image');
             $imagePath = 'showcases/' . $serialNumber . '.webp';
             $imageFile->move(public_path('images/showcases'), $serialNumber . '.webp');
 
@@ -92,6 +108,12 @@ class ShowcaseController extends Controller
                 'image' => $imagePath,
             ]);
         });
+
+        if ($showcase === null) {
+            return redirect()
+                ->route('dashboard')
+                ->with('info', 'Duplicate request detected');
+        }
 
         return redirect()
             ->route('showcases.index')
@@ -116,7 +138,7 @@ class ShowcaseController extends Controller
             'warranty_expired_at' => ['required', 'date'],
             'compressor_type' => ['required', 'string', 'max:255'],
             'glass_spec' => ['required', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'mimes:webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'user_id' => ['nullable', 'exists:users,id'],
         ]);
 
