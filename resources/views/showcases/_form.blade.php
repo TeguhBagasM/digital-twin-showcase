@@ -9,7 +9,7 @@
         : ($showcase->image_url() ?? null);
 @endphp
 
-<form method="POST" action="{{ $formAction }}" enctype="multipart/form-data" class="space-y-5">
+<form method="POST" action="{{ $formAction }}" enctype="multipart/form-data" id="formSubmit" class="space-y-5">
     @csrf
     @if($formMethod !== 'POST')
         @method($formMethod)
@@ -89,7 +89,7 @@
                 <input
                     type="file"
                     name="image"
-                    accept="image/webp"
+                    accept="image/*"
                     data-showcase-image-input
                     class="w-full rounded-xl bg-slate-950 border border-white/10 px-4 py-3 text-sm text-white file:mr-4 file:rounded-lg file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-sm file:font-display file:font-700 file:text-white hover:file:bg-brand-500 focus:border-brand-500/60 focus:outline-none"
                 >
@@ -99,7 +99,7 @@
             </div>
 
             <div class="rounded-xl bg-slate-900/80 border border-white/5 p-4 text-sm text-slate-400 leading-relaxed">
-                Upload gambar <span class="text-slate-200">.webp</span> ringan untuk setiap showcase. Disarankan di bawah 200KB.
+                Upload gambar ringan untuk setiap showcase. Disarankan di bawah 200KB.
             </div>
         </div>
     </div>
@@ -134,7 +134,7 @@
         <a href="{{ route('showcases.index') }}" class="inline-flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 text-sm text-white transition-colors">
             Batal
         </a>
-        <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-brand-600 hover:bg-brand-500 px-4 py-3 text-sm font-display font-700 text-white transition-colors">
+        <button type="submit" id="submitBtn" class="inline-flex items-center justify-center rounded-xl bg-brand-600 hover:bg-brand-500 px-4 py-3 text-sm font-display font-700 text-white transition-colors">
             {{ $submitLabel }}
         </button>
     </div>
@@ -143,8 +143,21 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('formSubmit');
+    const btn = document.getElementById('submitBtn');
     const input = document.querySelector('[data-showcase-image-input]');
     const preview = document.querySelector('[data-showcase-image-preview]');
+
+    if (form && btn) {
+        form.addEventListener('submit', function () {
+            if (btn.disabled) {
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+        });
+    }
 
     if (!input || !preview) {
         return;

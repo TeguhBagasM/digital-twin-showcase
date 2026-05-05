@@ -137,6 +137,15 @@
             </div>
             @endif
 
+            @if(session('info'))
+            <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-slate-900/80 border border-white/10 fade-in">
+                <svg class="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 21a9 9 0 100-18 9 9 0 000 18z"/>
+                </svg>
+                <p class="text-sm text-slate-300">{{ session('info') }}</p>
+            </div>
+            @endif
+
             @if(session('error'))
             <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-950/60 border border-red-700/40 fade-in">
                 <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
